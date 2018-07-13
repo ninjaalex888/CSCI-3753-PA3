@@ -173,11 +173,11 @@ We provide some code to help get you started. Feel free to use it as a jumping o
 
 9. api-test.c - pageit implementation that detects and prints simulator state changes. May be useful if you want to confirm the behavior of the simulator API. Builds to test-api.
 
-10. test-* - executable test programs. Runs the simulator using your pager-*.c strategy. Built using Makefile. The simulator provides a lot of tools to help you analyze your program. Run ./test-* -help for information on available options. It also responds to various signals by printing the current page table and process execution state to the screen (try ctrl-c while simulator is executing).
+10. test-\* - executable test programs. Runs the simulator using your pager-\*.c strategy. Built using Makefile. The simulator provides a lot of tools to help you analyze your program. Run ./test-\* -help for information on available options. It also responds to various signals by printing the current page table and process execution state to the screen (try ctrl-c while simulator is executing).
 
 11. test-api - API test program. See api-test.c.
 
-12. see.R - R script for displaying a visualization of the process run/block activity in a simulation. You must first run ./test-* -csv to generate the necessary trace files. To run visualization, lunch R in windowed graphics mode (in Linux: R -g Tk & at the command prompt) from the directory containing the trace files (or use setwd to set your working directory to the directory containing the trace files). Then run source(‘‘see.r’’) at the R command prompt to launch the visualization.
+12. see.R - R script for displaying a visualization of the process run/block activity in a simulation. You must first run ./test-\* -csv to generate the necessary trace files. To run visualization, lunch R in windowed graphics mode (in Linux: R -g Tk & at the command prompt) from the directory containing the trace files (or use setwd to set your working directory to the directory containing the trace files). Then run source(‘‘see.r’’) at the R command prompt to launch the visualization.
 
 
 ## 5.  &nbsp;&nbsp;What You Must Provide
