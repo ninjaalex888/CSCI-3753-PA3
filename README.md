@@ -54,7 +54,7 @@ long pages[MAXPROCPAGES]
 
 The simulator also exports a function called `pagein` and a function called `pageout`. These functions request that a specific page for a specific process be swapped in or swapped out, respectively. You will use these function to control the allocation of virtual and physical pages when writing your paging strategy. Each of these functions returns 1 if they succeed in starting a paging operation, if the requested paging operation is already in progress, or if the requested state already exists. 100 ticks after requesting a paging operation, the operation will complete. When calling `pagein`, the page maps passed to `pageit` will reflect the new state of the simulator after the request completes 100 ticks later. When calling `pageout`, the page maps passed to `pageit` will reflect the new state of the simulator in the first call to `pageit` after the request is made. In short, a page is recognized as swapped out as soon as a `pageout` request is made, but is not recognized as swapped in until after a `pagein` request completes. These functions return 0 if the paging request can not be processed (due to exceeding the limit of physical pages or because another paging operation is currently in process on the requested page) or if the request is invalid (paging operation requests non- existent page, etc). See Figure 1 for more details on the behavior of `pagein` and `pageout`.
 
-<img src="images/figure1.png" alt="Figure 1: Possible Page States and Transitions" style="width:500px;"/>
+<img src="images/figure1.png" alt="Figure 1: Possible Page States and Transitions" width=500px>
 
 Figure 1 shows the possible states that a virtual page can occupy, as well as the possible transitions between these states. Note that the page map values alone do not define all possible page states. We must also account for the possible operations currently underway on a page to fully define its state. While the page map for each process can be obtained from the `pageit` input array of structs, there is no interface to directly reveal any operations underway on a given page. If knowing whether or not a paging operation is underway on a given page (and thus knowing the full state of a page) is necessary for your `pageit` implementation, you must maintain this data yourself.
 
@@ -133,7 +133,9 @@ Note that while you know the structure of these programs, the programs flow is s
 ## 3. &nbsp;&nbsp;Implementation Ideas
 In general, your `pageit()` implementation will need to follow the basic flow presented in Figure 2. You will probably spend most of your time deciding how to implement the “Select a Page to Evict” element.
 
-![Figure 2: Basic Reactive pageit() Flow](images/figure2.png)
+
+<img src="images/figure2.png" alt="Figure 2: Basic Reactive pageit() Flow" width=500px/>
+
 
 A basic “one-process-at-a-time” implementation is provided for you. This implementation never actually ends up having to swap out any pages. Since only one process is allocated pages at a time, no more than 20 pages are ever in use. When each process completes, it releases all of its pages and the next process is allowed to allocate pages and run. This is a very simple solution, and as you might expect, does not provide very good performance. Still, it provides a simple starting point that demonstrates the simulator API. See pager-basic.c for more information.
 
@@ -141,7 +143,7 @@ To start, create some form of “Least Recently Used” (LRU) paging algorithm. 
 
 To really do well on this assignment, you must create some form of predictive paging algorithm. A predictive algorithm attempts to predict what pages each process will require in the future and then swaps these pages in before they are needed. Thus, when these pages are needed, they are already swapped in and ready to go. The process need not block to wait for the required pages to be swapped in, greatly increasing performance. . Figure 3 shows a modified version of the Figure 2 flowchart for a predictive implementation of `pageit`. As for the LRU implementation, a simple predictive stub has been created for you in the `pager-predict.c` file.
 
-![Figure 3: Basic Predictive pageit() Flow](images/figure3.png)
+<img src="images/figure3.png" alt="Figure 3: Basic Predictive pageit() Flow" width=500px/>
 
 There are effectively two approaches to predictive algorithms. The first approach is to leverage your knowledge of the possible program types (see previous section). In this approach, one generally attempts to heuristically determine which program each process is an instance of by tracking the movement of the process’s program counter (PC). Once each process is classified, you can use further PC heuristics to determine where in its execution the process is, and then implement a paging strategy that attempts to swap in pages required by upcoming program actions before they occur. Since the programs all have probabilistic elements, this approach will never be perfect, but it can do very well.
 The second approach to predictive algorithms is to ignore the knowledge you have been given regarding the various program types. Instead, you might track each process’ program counter to try to detect various common patterns (loops, jumps to specific locations, etc). If you detect a pattern, you assume that the pattern will continue to repeat and attempt to swap in the necessary pages touched during the execution of the pattern before the process needs them. Working set algorithms are a subset of this approach.
